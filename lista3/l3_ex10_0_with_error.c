@@ -1,17 +1,21 @@
 #include <stdio.h>
+#include <math.h>
 
 int main()
 {
-    int notas,moedas;
-    int notas100, notas50, notas20, notas10, notas5, notas2,
-        moedas1real, moedas50, moedas25, moedas10, moedas5, moedas1,
-        resto;
+    double valor = 0.0001;
+    int notas100, notas50, notas20, notas10, notas5, notas2, moedas1real, moedas50, moedas25, moedas10, moedas5, moedas1, resto, valor_int;
 
-    scanf("%d.%d", &notas, &moedas);
+    // printf("%lf eh valor lixo\n", valor);//debug
+    scanf("%lf", &valor);
+    // printf("%lf eh valor lido\n", valor);//debug
 
+    // convert valor de ponto flutuante para inteiro
+    // ignora decimais e não arredonda
+    valor_int = (int)valor / 1;
     // Notas
-    notas100 = notas / 100;
-    resto = notas % 100;
+    notas100 = valor_int / 100;
+    resto = valor_int % 100;
     notas50 = resto / 50;
     resto = resto % 50;
     notas20 = resto / 20;
@@ -25,9 +29,27 @@ int main()
 
     // Moedas
     moedas1real = resto / 1;
+
+    // Obtendo como inteiro o valor decimal do double (75.50 -> 50)
+    // printf("%d eh valor_int\n", valor_int); //debug
+    // resto = valor_int * 1000;
+    // printf("%d eh resto = valor_int * 1000\n", resto); //debug
+    // printf("%lf eh o valor\n", valor); //debug
+
+    // double valor1000 = valor * 1000;
+    // printf("%lf eh o valor * 1000\n", valor1000); //debug
+
+    // valor_int = (int)(valor * 1000);
+    // printf("%d eh valor_int = (int)(valor * 1000)\n", valor_int); //debug
+    // resto = (valor_int % resto)/10;
+
+
+    resto = ((int)(valor * 1000) % (valor_int * 1000))/10;
+    // printf("%d eh centavo\n", resto);//debug
+
     // Obtendo moedas < 1
-    moedas50 = moedas / 50;
-    resto = moedas % 50;
+    moedas50 = resto / 50;
+    resto = resto % 50;
     moedas25 = resto / 25;
     resto = resto % 25;
     moedas10 = resto / 10;

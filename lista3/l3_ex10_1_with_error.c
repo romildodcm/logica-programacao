@@ -2,16 +2,19 @@
 
 int main()
 {
-    int notas,moedas;
+    double valor = 0.00001;
     int notas100, notas50, notas20, notas10, notas5, notas2,
         moedas1real, moedas50, moedas25, moedas10, moedas5, moedas1,
-        resto;
+        resto, valor_int;
 
-    scanf("%d.%d", &notas, &moedas);
+    scanf("%lf", &valor);
 
+    // Converte valor de ponto flutuante para inteiro
+    // Ignora decimais e não arredonda
+    valor_int = (int)valor / 1;
     // Notas
-    notas100 = notas / 100;
-    resto = notas % 100;
+    notas100 = valor_int / 100;
+    resto = valor_int % 100;
     notas50 = resto / 50;
     resto = resto % 50;
     notas20 = resto / 20;
@@ -25,9 +28,13 @@ int main()
 
     // Moedas
     moedas1real = resto / 1;
+
+    // decimal para int
+    resto = ((int)(valor * 1000) % (valor_int * 1000)) / 10;
+
     // Obtendo moedas < 1
-    moedas50 = moedas / 50;
-    resto = moedas % 50;
+    moedas50 = resto / 50;
+    resto = resto % 50;
     moedas25 = resto / 25;
     resto = resto % 25;
     moedas10 = resto / 10;

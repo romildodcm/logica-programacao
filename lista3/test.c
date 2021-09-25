@@ -11,10 +11,10 @@ int main()
     valor_int = (int)valor;
 
     // Obtendo como inteiro o valor decimal do double (75.50 -> 50)
-    resto = valor_int;
-    resto = resto * 100;
+    resto = valor_int * 100;
     valor_int = (int)(valor * 100);
     resto = valor_int % resto;
+
 
     printf("%d", resto);
 
