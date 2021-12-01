@@ -12,6 +12,26 @@ struct Funcionario
     float salario;
 };
 
+// busca
+int busca(struct Funcionario f[], int len, char nome[255])
+{
+    int i = 0;
+    for (i = 0; i < len; i++)
+    {
+        // printf("Comparando se %s = %s: ", nome, f[i].nome);
+        if (strcmp(f[i].nome, nome) == 0)
+        {
+            // printf("Sim.\n");
+            return i;
+        }
+        // else
+        // {
+        //     printf("Nao.\n");
+        // }
+    }
+    return -1;
+}
+
 // 4 - Cálculo do salário - formação
 int formacao(int grauDeEstudo)
 {
@@ -77,7 +97,7 @@ float salario(struct Funcionario f)
 }
 
 // 8 - quantidade de funcionáriso que ganham acima da média
-int ganhamAcimaDaMedia(struct Funcionario *f, int n)
+int ganhamAcimaDaMedia(struct Funcionario f[], int n)
 {
     int total = 0, i = 0;
     float salarioMedio = 0.0, sum = 0.0;
@@ -116,29 +136,29 @@ int menuAlteraDados()
     return operacao;
 }
 // 9 alterar dados
-void alteraDados(struct Funcionario *f, int n)
+void alteraDados(struct Funcionario f[], int n)
 {
-    int opcao = -2, i = 0;
+    int opcao = 1, i = 0;
+    char nome[255];
 
     printf("------------ Alterar dados de um funcionario -----------\n");
-    while (opcao == -2)
+    // busca/tentativas de busca
+    while (opcao == 1)
     {
-        char nome[255];
         printf("Digite o nome: ");
         fflush(stdin);
         fgets(nome, sizeof(nome), stdin);
+        i = busca(f, n, nome);
 
-        for (i = 0; i < n; i++)
+        if (i == -1)
         {
-            if (strcmp(f[i].nome, nome) == 0)
-            {
-                opcao = -1;
-                break;
-            }
-            else if (i == n - 1)
-            {
-                printf("Nome invalido! Tente novamente.");
-            }
+            printf("\nNome invalido!\n");
+            printf("Tecle 1 para tentar novamente ou 0 para sair: ");
+            scanf(" %d", &opcao);
+        }
+        else
+        {
+            opcao = -1;
         }
     }
 
@@ -206,11 +226,14 @@ int cadastrarFuncionarios(struct Funcionario *f, int n, int max)
     int op = 1;
     while (op == 1)
     {
-        printf("Cadastrado(s) %d/%d funcionarios.\n", n, max);
-        if (n <= max)
+        if (n >= max)
         {
-            n++;
-
+            printf("Ja foram cadastrados todos os %d funcionarios.\n", max);
+            op = 0;
+        }
+        else if (n < max)
+        {
+            printf("Cadastrando(s) %d/%d funcionarios.\n", n + 1, max);
             printf("Nome: ");
             fflush(stdin);
             fgets(f[n].nome, sizeof(f[n].nome), stdin);
@@ -223,20 +246,18 @@ int cadastrarFuncionarios(struct Funcionario *f, int n, int max)
             printf("Indice de produtividade (entre 0.0 e 1.0): ");
             scanf(" %f", &f[n].indiceProdutividade);
 
+            // sobre index para próximo funcionario
+            n++;
+
             printf("\nDigite 1 para inserir mais um funcionario\n");
             printf("ou digite 0 para voltar ao menu principal: ");
             scanf(" %d", &op);
-            printf("\n");
-        }
-        else
-        {
-            printf("Ja foram cadastrados todos os %d funcionarios.\n", max);
-            op = 0;
         }
     }
 
     return n;
 }
+
 int menuPrincipal()
 {
     int operacao = -1;
@@ -249,44 +270,41 @@ int menuPrincipal()
     printf("\t 5 - Visualizar informacoes de um funcionario;\n");
     printf("\t 0 - Sair;\n\n");
     printf("Digite o numero da opcao que deseja e tecle enter: ");
+    fflush(stdin);
     scanf(" %d", &operacao);
 
     return operacao;
 }
 
-// função vizualizar
-void visualizarDadosFuncionario(struct Funcionario *f, int n)
+// função visualizar
+void visualizarDadosFuncionario(struct Funcionario f[], int n)
 {
     int i = 0;
     char nome[255];
     printf("Digite o nome: ");
     fflush(stdin);
     fgets(nome, sizeof(nome), stdin);
+    i = busca(f, n, nome);
 
-    for (i = 0; i < n; i++)
+    if (i == -1)
     {
-        if (strcmp(f[i].nome, nome) == 0)
-        {
-            // mostrar os dados
-            printf("Nome: %s", f[i].nome);
-            printf("Grau de estudo: %d\n", f[i].grauEstudo);
-            printf("Quantidade de linguas que fala: %d\n", f[i].quantidadeLinguas);
-            printf("Nivel do cargo que ocupa: %d\n", f[i].nivelCargo);
-            printf("Indice de produtividade: %f\n", f[i].indiceProdutividade);
-            printf("Salario: %.2f\n", f[i].salario);
-
-            break;
-        }
-        else if (i == n - 1)
-        {
-            printf("Nome invalido! Tente novamente.");
-        }
+        printf("Nome invalido! Tente novamente.\n");
+    }
+    else
+    {
+        // mostrar os dados
+        printf("Nome: %s", f[i].nome);
+        printf("Grau de estudo: %d\n", f[i].grauEstudo);
+        printf("Quantidade de linguas que fala: %d\n", f[i].quantidadeLinguas);
+        printf("Nivel do cargo que ocupa: %d\n", f[i].nivelCargo);
+        printf("Indice de produtividade: %f\n", f[i].indiceProdutividade);
+        printf("Salario: %.2f\n", f[i].salario);
     }
 }
 
 int main()
 {
-    int max = 0, op = -1, i = 0, controleCalculoSalario = 0, pessoasCadastradas = 0;
+    int max = 0, op = -1, op2 = -1, i = 0, controleCalculoSalario = 0, pessoasCadastradas = 0;
     printf("----------------------- SALAR.IO -----------------------\n");
     printf("Quantas pessoas trabalham na empresa?\n");
     scanf(" %d", &max);
@@ -298,14 +316,17 @@ int main()
 
         if (op != 1 && pessoasCadastradas == 0)
         {
+            printf("------------------------- ERRO -------------------------\n");
             printf("Opcao bloqueada, primeiro cadastre funcionarios.\n");
             op = 1;
         }
         // checar mudanças, se os dados mudarem, executar op 2 antes da op 3
         if (controleCalculoSalario != 0)
         {
-            printf("Os dados foram alterados, calculando salarios...");
+            printf("------------------------- ERRO -------------------------\n");
+            printf("Os dados foram alterados, calculando salarios.\n");
             controleCalculoSalario = 0;
+            op2 = op;
             op = 2;
         }
 
@@ -324,22 +345,27 @@ int main()
                 funcionarios[i].salario = salario(funcionarios[i]);
             }
             printf("Os salarios de %d funcionarios foram calculados.\n", pessoasCadastradas);
+            if (op2 != -1)
+            {
+                printf("Selecione novamente a opcao desejada...\n");
+                op2 = -1;
+            }
             break;
+
         case 3:
             printf("--------- Quantidade de Salarios Acima da Media --------\n");
             printf("%d funcionarios ganham acima da media.\n", ganhamAcimaDaMedia(funcionarios, pessoasCadastradas));
             break;
         case 4:
-            printf("--------- Editar Informações de um Funcionario ---------\n");
+            printf("--------- Editar Informacoes de um Funcionario ---------\n");
             alteraDados(funcionarios, pessoasCadastradas);
             controleCalculoSalario = 1;
             break;
         case 5:
-            printf("------- Visualizar informações de um funcionario -------\n");
+            printf("------- Visualizar Informacoes de um Funcionario -------\n");
             visualizarDadosFuncionario(funcionarios, pessoasCadastradas);
             break;
         case 0:
-            /* code */
             printf("---------------------- Saindo... -----------------------\n");
             break;
 
